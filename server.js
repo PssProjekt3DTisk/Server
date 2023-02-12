@@ -1,34 +1,23 @@
-const net = require("net");
+const express = require('express');
+const http = require("http");
 const fs = require("fs");
+const server = express();
+const path = require('path');
+const PORT = 3000;
 
-const server = met.createServer((socket) => {
-    socket.on("data", (buffer) => {
-        const requestString = buffer.toString("utf-8");
+server.use(express.static('public'));
 
-        const request = parseRequest(requestString);
+server.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname+'/web page', '/index.html'));
+  });
 
-        console.log(request.method, request.path, request.protocol);
-
-        if(request.method === "GET") {
-            if(fs.existsSync(`${request.path}`)) {
-                socket.write("HTTP/1.0 200 OK");
-            } else {
-                socket.write("HTTP/1.0 404 Not Found");
-            }
-            
-        }
-
-    })
-})
-
-const parseRequest = (requestString) => {
-    const [method, path, protocol] = requestString.split("");
-
-    return {
-        method,
-        path,
-        protocol
+server.listen(PORT, function(error) {
+    if(error) {
+        console.log("Something went wrong ", error);
+    } else {
+        console.log("Server is listening on port " + PORT)
     }
-}
-
-server.listen(9999, () => console.log("Listening"));
+});
+/*
+server.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
+*/
